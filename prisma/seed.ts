@@ -7,6 +7,9 @@ import { TicketType } from "@prisma/client";
 async function main() {
   await prisma.event.deleteMany({});
   await prisma.ticketType.deleteMany({});
+  await prisma.hotel.deleteMany({});
+  await prisma.room.deleteMany({});
+
   const event = await prisma.event.create({
     data: {
       title: "Driven.t",
@@ -36,6 +39,44 @@ async function main() {
         price: 600,
         isRemote: false,
         includesHotel: true,
+      },
+    ],
+  });
+
+  await prisma.hotel.createMany({
+    data: [
+      {
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1w70-bSiiCCdYVEJA4MtEjPgsbNLCl-sLeQ&usqp=CAU",
+        name: "Driven Resort",
+      },
+      {
+        name: "Driven Palace",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1w70-bSiiCCdYVEJA4MtEjPgsbNLCl-sLeQ&usqp=CAU",
+      },
+      {
+        name: "Driven World",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1w70-bSiiCCdYVEJA4MtEjPgsbNLCl-sLeQ&usqp=CAU",
+      },
+    ],
+  });
+
+  const hotels = await prisma.hotel.findMany({});
+  await prisma.room.createMany({
+    data: [
+      {
+        name: "Single and Double",
+        capacity: 103,
+        hotelId: hotels[0].id,
+      },
+      {
+        name: "Single, Double and Triple",
+        capacity: 25,
+        hotelId: hotels[1].id,
+      },
+      {
+        name: "Single and Double",
+        capacity: 2,
+        hotelId: hotels[2].id,
       },
     ],
   });
