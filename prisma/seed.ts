@@ -1,8 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import dayjs from "dayjs";
 const prisma = new PrismaClient();
-
-import { TicketType } from "@prisma/client";
+import { TicketType, Hotel } from "@prisma/client";
+import { Room } from "../src/protocols";
 
 async function main() {
   await prisma.event.deleteMany({});
@@ -62,23 +62,7 @@ async function main() {
 
   const hotels = await prisma.hotel.findMany({});
   await prisma.room.createMany({
-    data: [
-      {
-        name: "Single and Double",
-        capacity: 103,
-        hotelId: hotels[0].id,
-      },
-      {
-        name: "Single, Double and Triple",
-        capacity: 25,
-        hotelId: hotels[1].id,
-      },
-      {
-        name: "Single and Double",
-        capacity: 2,
-        hotelId: hotels[2].id,
-      },
-    ],
+    data: createRooms(hotels),
   });
 
   console.log({ event });
@@ -92,3 +76,19 @@ main()
   .finally(async () => {
     await prisma.$disconnect();
   });
+
+function createRooms(hotels: Hotel[]): Room[] {
+  const rooms: Room[] = [];
+
+  for (let j = 0; j < hotels.length; j++) {
+    for (let i = 101; i <= 116; i++) {
+      rooms.push({ name: `${i}`, capacity: getRandom(), hotelId: hotels[j].id });
+    }
+  }
+
+  return rooms;
+}
+
+function getRandom() {
+  return Math.floor(Math.random() * 3 + 1);
+}
