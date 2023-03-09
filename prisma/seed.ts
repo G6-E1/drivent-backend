@@ -6,9 +6,12 @@ import { Room } from "../src/protocols";
 
 async function main() {
   await prisma.event.deleteMany({});
+  await prisma.payment.deleteMany({});
+  await prisma.ticket.deleteMany({});
   await prisma.ticketType.deleteMany({});
-  await prisma.hotel.deleteMany({});
+  await prisma.booking.deleteMany({});
   await prisma.room.deleteMany({});
+  await prisma.hotel.deleteMany({});
 
   const event = await prisma.event.create({
     data: {
