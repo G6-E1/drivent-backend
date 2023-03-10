@@ -1,8 +1,9 @@
 import { PrismaClient } from "@prisma/client";
 import dayjs from "dayjs";
 const prisma = new PrismaClient();
-import { TicketType, Hotel } from "@prisma/client";
-import { Room } from "../src/protocols";
+import { TicketType, Hotel, Room, Booking } from "@prisma/client";
+type ShortRoom = Omit<Room, "id" | "createdAt" | "updatedAt">;
+type ShortBooking = Omit<Booking, "id" | "createdAt" | "updatedAt">;
 
 async function main() {
   await prisma.event.deleteMany({});
@@ -12,6 +13,13 @@ async function main() {
   await prisma.booking.deleteMany({});
   await prisma.room.deleteMany({});
   await prisma.hotel.deleteMany({});
+
+  const user = await prisma.user.create({
+    data: {
+      email: "email@email.com",
+      password: "password",
+    },
+  });
 
   const event = await prisma.event.create({
     data: {
@@ -68,6 +76,11 @@ async function main() {
     data: createRooms(hotels),
   });
 
+  const rooms = await prisma.room.findMany({});
+  await prisma.booking.createMany({
+    data: createBooking(user.id, rooms),
+  });
+
   console.log({ event });
 }
 
@@ -80,18 +93,60 @@ main()
     await prisma.$disconnect();
   });
 
-function createRooms(hotels: Hotel[]): Room[] {
-  const rooms: Room[] = [];
+function createRooms(hotels: Hotel[]): ShortRoom[] {
+  const rooms: ShortRoom[] = [];
+  let num: number;
+  for (let i = 0; i < hotels.length; i++) {
+    if (i % 2 === 0) {
+      num = 2;
+    } else {
+      num = 3;
+    }
 
-  for (let j = 0; j < hotels.length; j++) {
-    for (let i = 101; i <= 116; i++) {
-      rooms.push({ name: `${i}`, capacity: getRandom(), hotelId: hotels[j].id });
+    for (let j = 101; j <= 116; j++) {
+      rooms.push({ name: `${j}`, capacity: getRandom(num), hotelId: hotels[i].id });
     }
   }
 
   return rooms;
 }
 
-function getRandom() {
-  return Math.floor(Math.random() * 3 + 1);
+function getRandom(num: number): number {
+  return Math.floor(Math.random() * num + 1);
+}
+
+function createBooking(userId: number, rooms: Room[]): ShortBooking[] {
+  const booking: ShortBooking[] = [];
+  for (let i = 0; i < rooms.length; i++) {
+    if (i <= 15) {
+      if (rooms[i].capacity === 2 && booking.length === 0) {
+        for (let j = 0; j < 2; j++) {
+          booking.push({ userId: userId, roomId: rooms[i].id });
+        }
+      }
+      if (rooms[i].capacity === 1 && booking.length === 2) {
+        booking.push({ userId: userId, roomId: rooms[i].id });
+      }
+    } else if (i <= 31) {
+      if (rooms[i].capacity === 3 && booking.length === 3) {
+        for (let j = 0; j < 3; j++) {
+          booking.push({ userId: userId, roomId: rooms[i].id });
+        }
+      }
+      if (rooms[i].capacity === 1 && booking.length === 6) {
+        booking.push({ userId: userId, roomId: rooms[i].id });
+      }
+    } else {
+      if (rooms[i].capacity === 2 && booking.length === 7) {
+        for (let j = 0; j < 2; j++) {
+          booking.push({ userId: userId, roomId: rooms[i].id });
+        }
+      }
+      if (rooms[i].capacity === 1 && booking.length === 9) {
+        booking.push({ userId: userId, roomId: rooms[i].id });
+      }
+    }
+  }
+
+  return booking;
 }

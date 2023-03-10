@@ -28,12 +28,3 @@ export type RequestError = {
   name: string;
   message: string;
 };
-
-export type Room = {
-  id?: number;
-  name: string;
-  capacity: number;
-  hotelId: number;
-  createdAt?: Date;
-  updateAt?: Date;
-};
