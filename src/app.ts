@@ -19,6 +19,8 @@ import {
   bookingRouter
 } from "@/routers";
 
+import { connectRedis } from "./config/redis";
+
 const app = express();
 app
   .use(cors())
@@ -36,6 +38,7 @@ app
 
 export function init(): Promise<Express> {
   connectDb();
+  connectRedis();
   return Promise.resolve(app);
 }
 
