@@ -1,4 +1,3 @@
-import { redis } from "@/config";
 import eventsService from "@/services/events-service";
 import { Request, Response } from "express";
 import httpStatus from "http-status";

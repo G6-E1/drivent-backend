@@ -1,10 +1,9 @@
-import { redis } from "@/config";
+import { redis } from "@/server";
 import { notFoundError } from "@/errors";
 import eventRepository from "@/repositories/event-repository";
 import { exclude } from "@/utils/prisma-utils";
 import { Event } from "@prisma/client";
 import dayjs from "dayjs";
-import { env } from "process";
 
 async function getFirstEvent(): Promise<GetFirstEventResult> {
   let event = await eventRepository.findCached();
@@ -12,7 +11,7 @@ async function getFirstEvent(): Promise<GetFirstEventResult> {
     event = await eventRepository.findFirst();
   }
   if (!event) throw notFoundError();
-  console.log(event);
+  
   await redis.set("event", JSON.stringify(event));
 
   return exclude(event, "createdAt", "updatedAt");

@@ -1,4 +1,5 @@
-import { prisma, redis } from "@/config";
+import { prisma } from "@/config";
+import { redis } from "@/server";
 import { Event } from "@prisma/client";
 
 async function findFirst() {
