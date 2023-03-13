@@ -42,7 +42,7 @@ async function findByUserId(userId: number) {
 async function upsertBooking({ id, roomId, userId }: UpdateParams) {
   return prisma.booking.upsert({
     where: {
-      id,
+      id: id || 0,
     },
     create: {
       roomId,
