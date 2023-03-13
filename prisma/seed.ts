@@ -70,7 +70,8 @@ async function main() {
       },
       {
         name: "Driven World",
-        image: "https://cdn.loewshotels.com/loewshotels.com-2466770763/cms/cache/v2/620d6d91270c8.jpg/1920x1080/fit/80/eb7551cd93224863612f7472c55d933f.jpg",
+        image:
+          "https://cdn.loewshotels.com/loewshotels.com-2466770763/cms/cache/v2/620d6d91270c8.jpg/1920x1080/fit/80/eb7551cd93224863612f7472c55d933f.jpg",
       },
     ],
   });
@@ -124,29 +125,29 @@ function createBooking(userId: number, rooms: Room[]): ShortBooking[] {
   for (let i = 0; i < rooms.length; i++) {
     if (i <= 15) {
       if (rooms[i].capacity === 2 && booking.length === 0) {
+        for (let j = 0; j < 1; j++) {
+          booking.push({ userId: userId, roomId: rooms[i].id });
+        }
+      }
+      if (rooms[i].capacity === 1 && booking.length === 1) {
+        booking.push({ userId: userId, roomId: rooms[i].id });
+      }
+    } else if (i <= 31) {
+      if (rooms[i].capacity === 3 && booking.length === 2) {
         for (let j = 0; j < 2; j++) {
           booking.push({ userId: userId, roomId: rooms[i].id });
         }
       }
-      if (rooms[i].capacity === 1 && booking.length === 2) {
+      if (rooms[i].capacity === 1 && booking.length === 4) {
         booking.push({ userId: userId, roomId: rooms[i].id });
       }
-    } else if (i <= 31) {
-      if (rooms[i].capacity === 3 && booking.length === 3) {
-        for (let j = 0; j < 3; j++) {
+    } else {
+      if (rooms[i].capacity === 2 && booking.length === 5) {
+        for (let j = 0; j < 1; j++) {
           booking.push({ userId: userId, roomId: rooms[i].id });
         }
       }
       if (rooms[i].capacity === 1 && booking.length === 6) {
-        booking.push({ userId: userId, roomId: rooms[i].id });
-      }
-    } else {
-      if (rooms[i].capacity === 2 && booking.length === 7) {
-        for (let j = 0; j < 2; j++) {
-          booking.push({ userId: userId, roomId: rooms[i].id });
-        }
-      }
-      if (rooms[i].capacity === 1 && booking.length === 9) {
         booking.push({ userId: userId, roomId: rooms[i].id });
       }
     }
