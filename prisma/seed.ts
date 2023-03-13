@@ -16,8 +16,6 @@ async function main() {
   await prisma.address.deleteMany({});
   await prisma.enrollment.deleteMany({});
   await prisma.user.deleteMany({});
-
-
   await prisma.ticket.deleteMany({});
 
 
@@ -64,16 +62,16 @@ async function main() {
   await prisma.hotel.createMany({
     data: [
       {
-        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1w70-bSiiCCdYVEJA4MtEjPgsbNLCl-sLeQ&usqp=CAU",
+        image: "https://media-cdn.tripadvisor.com/media/photo-s/16/1a/ea/54/hotel-presidente-4s.jpg",
         name: "Driven Resort",
       },
       {
         name: "Driven Palace",
-        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1w70-bSiiCCdYVEJA4MtEjPgsbNLCl-sLeQ&usqp=CAU",
+        image: "https://pix10.agoda.net/hotelImages/124/1246280/1246280_16061017110043391702.jpg?ca=6&ce=1&s=1024x768",
       },
       {
         name: "Driven World",
-        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1w70-bSiiCCdYVEJA4MtEjPgsbNLCl-sLeQ&usqp=CAU",
+        image: "https://cdn.loewshotels.com/loewshotels.com-2466770763/cms/cache/v2/620d6d91270c8.jpg/1920x1080/fit/80/eb7551cd93224863612f7472c55d933f.jpg",
       },
     ],
   });
