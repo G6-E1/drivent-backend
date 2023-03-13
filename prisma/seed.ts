@@ -8,16 +8,15 @@ type ShortBooking = Omit<Booking, "id" | "createdAt" | "updatedAt">;
 async function main() {
   await prisma.event.deleteMany({});
   await prisma.payment.deleteMany({});
+  await prisma.ticket.deleteMany({});
   await prisma.ticketType.deleteMany({});
   await prisma.session.deleteMany({});
-  await prisma.hotel.deleteMany({});
-  await prisma.room.deleteMany({});
   await prisma.booking.deleteMany({});
+  await prisma.room.deleteMany({});
+  await prisma.hotel.deleteMany({});
   await prisma.address.deleteMany({});
   await prisma.enrollment.deleteMany({});
   await prisma.user.deleteMany({});
-  await prisma.ticket.deleteMany({});
-
 
   const user = await prisma.user.create({
     data: {
