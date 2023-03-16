@@ -1,9 +1,11 @@
 import { PrismaClient } from "@prisma/client";
-import dayjs from "dayjs";
 const prisma = new PrismaClient();
-import { TicketType, Hotel, Room, Booking } from "@prisma/client";
+import dayjs from "dayjs";
+import { TicketType, Hotel, Room, Booking, Local, EnrollmentActivity, Activity } from "@prisma/client";
 type ShortRoom = Omit<Room, "id" | "createdAt" | "updatedAt">;
 type ShortBooking = Omit<Booking, "id" | "createdAt" | "updatedAt">;
+type ShortLocal = Omit<Local, "id" | "createdAt" | "updatedAt">;
+type ShortActivity = Omit<Activity, "id" | "createdAt" | "updatedAt">;
 
 async function main() {
   await prisma.event.deleteMany({});
@@ -61,7 +63,7 @@ async function main() {
   await prisma.hotel.createMany({
     data: [
       {
-        image: "https://media-cdn.tripadvisor.com/media/photo-s/16/1a/ea/54/hotel-presidente-4s.jpg",
+        image: "https://pix10.agoda.net/hotelImages/124/1246280/1246280_16061017110043391702.jpg?ca=6&ce=1&s=1024x768",
         name: "Driven Resort",
       },
       {
@@ -84,6 +86,15 @@ async function main() {
   const rooms = await prisma.room.findMany({});
   await prisma.booking.createMany({
     data: createBooking(user.id, rooms),
+  });
+
+  await prisma.local.createMany({
+    data: createLocals(),
+  });
+
+  const locals = await prisma.local.findMany({});
+  await prisma.activity.createMany({
+    data: createActivities(locals),
   });
 
   console.log({ event });
@@ -154,4 +165,59 @@ function createBooking(userId: number, rooms: Room[]): ShortBooking[] {
   }
 
   return booking;
+}
+
+function createLocals(): ShortLocal[] {
+  const locals: ShortLocal[] = [];
+  locals.push(
+    { name: "Auditório Principal", maxCapacity: 200 },
+    { name: "Auditório lateral", maxCapacity: 120 },
+    { name: "Sala de Workshop", maxCapacity: 80 },
+  );
+
+  return locals;
+}
+
+function createActivities(locals: Local[]): ShortActivity[] {
+  const activities: ShortActivity[] = [];
+
+  activities.push(
+    {
+      name: "React - uma nova forma de desenvolver pra web",
+      localId: locals[0].id,
+      vacancies: locals[0].maxCapacity,
+      startAt: dayjs().month(2).date(20).day(3).hour(9).minute(0).second(0).millisecond(0).toDate(),
+      finishAt: dayjs().month(2).date(20).day(3).hour(10).minute(0).second(0).millisecond(0).toDate(),
+    },
+    {
+      name: "Prisma - O ORM do futuro",
+      localId: locals[0].id,
+      vacancies: locals[0].maxCapacity,
+      startAt: dayjs().month(2).date(20).day(3).hour(10).minute(0).second(0).millisecond(0).toDate(),
+      finishAt: dayjs().month(2).date(20).day(3).hour(11).minute(0).second(0).millisecond(0).toDate(),
+    },
+    {
+      name: "ChatGPT - A revolução das máquinas começou",
+      localId: locals[1].id,
+      vacancies: locals[1].maxCapacity,
+      startAt: dayjs().month(2).date(20).day(3).hour(9).minute(0).second(0).millisecond(0).toDate(),
+      finishAt: dayjs().month(2).date(20).day(3).hour(12).minute(0).second(0).millisecond(0).toDate(),
+    },
+    {
+      name: "Curso de Manutenção de computadores",
+      localId: locals[2].id,
+      vacancies: locals[2].maxCapacity,
+      startAt: dayjs().month(2).date(21).day(4).hour(9).minute(0).second(0).millisecond(0).toDate(),
+      finishAt: dayjs().month(2).date(21).day(4).hour(12).minute(0).second(0).millisecond(0).toDate(),
+    },
+    {
+      name: "Workshop de inglês técnico para programadores",
+      localId: locals[2].id,
+      vacancies: locals[2].maxCapacity,
+      startAt: dayjs().month(2).date(22).day(5).hour(9).minute(0).second(0).millisecond(0).toDate(),
+      finishAt: dayjs().month(2).date(22).day(5).hour(12).minute(0).second(0).millisecond(0).toDate(),
+    },
+  );
+
+  return activities;
 }
