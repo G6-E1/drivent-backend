@@ -185,7 +185,7 @@ function createActivities(locals: Local[]): ShortActivity[] {
     {
       name: "React - uma nova forma de desenvolver pra web",
       localId: locals[0].id,
-      vacancies: 0,
+      vacancies: locals[0].maxCapacity,
       startAt: dayjs().month(2).date(20).day(3).hour(9).minute(0).second(0).millisecond(0).toDate(),
       finishAt: dayjs().month(2).date(20).day(3).hour(10).minute(0).second(0).millisecond(0).toDate(),
     },
