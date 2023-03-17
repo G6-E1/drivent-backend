@@ -16,3 +16,16 @@ export async function postActivityEnrollment(req: AuthenticatedRequest, res: Res
     if (err.name === "ConflictError") return res.status(httpStatus.CONFLICT);
   }
 }
+
+export async function deleteActivityEnrollment(req: AuthenticatedRequest, res: Response) {
+  const { userId } = req;
+  const { activityId } = req.params;
+
+  try {
+    await activitiesEnrollementsService.deleteActivityEnrollment(userId, Number(activityId));
+    return res.status(httpStatus.OK);
+  } catch (err) {
+    if (err.name === "NotFoundError") return res.status(httpStatus.NOT_FOUND);
+    if (err.name === "RequestError") return res.status(httpStatus.BAD_REQUEST);
+  }
+}

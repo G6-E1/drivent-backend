@@ -18,9 +18,18 @@ function createActivityEnrollment(userId: number, activityId: number) {
   });
 }
 
+function deleteActivityEnrollment(id: number) {
+  return prisma.enrollmentActivity.delete({
+    where: {
+      id,
+    },
+  });
+}
+
 const activitiesEnrollmentsRepository = {
   findActivityEnrollmentById,
   createActivityEnrollment,
+  deleteActivityEnrollment,
 };
 
 export default activitiesEnrollmentsRepository;
