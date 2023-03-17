@@ -16,11 +16,12 @@ import {
   ticketsRouter,
   paymentsRouter,
   hotelsRouter,
-  bookingRouter
+  bookingRouter,
 } from "@/routers";
 
 import { connectRedis } from "./config/redis";
 import { activitiesRouter } from "./routers/activities-router";
+import { activitiesEnrollmentsRouter } from "./routers/activities-enrollments-router";
 
 const app = express();
 app
@@ -36,6 +37,7 @@ app
   .use("/hotels", hotelsRouter)
   .use("/booking", bookingRouter)
   .use("/activities", activitiesRouter)
+  .use("/activities-enrollments", activitiesEnrollmentsRouter)
   .use(handleApplicationErrors);
 
 export function init(): Promise<Express> {
