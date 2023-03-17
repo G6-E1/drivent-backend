@@ -11,7 +11,6 @@ export async function getDatesActivities(req: AuthenticatedRequest, res: Respons
     return res.status(httpStatus.OK).send(datesActivities); 
   } catch (error) {
     //Simples teste de funcionamento - remover depois
-    return res.status(400).send(error)
-    //Criar retorno dos erros
+    return res.status(httpStatus.NOT_FOUND)
   }
 }
