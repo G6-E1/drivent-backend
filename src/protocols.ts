@@ -11,6 +11,10 @@ export type ViaCEPAddress = {
   uf: string;
 };
 
+export type PostActivityEnrollment = {
+  activityId: number;
+};
+
 //Regra de Negócio
 export type AddressEnrollment = {
   logradouro: string;
