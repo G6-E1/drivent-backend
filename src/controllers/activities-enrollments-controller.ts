@@ -12,8 +12,8 @@ export async function postActivityEnrollment(req: AuthenticatedRequest, res: Res
     const enrollment = await activitiesEnrollementsService.postActivityEnrollment(userId, activityId);
     return res.status(httpStatus.OK).send(enrollment);
   } catch (err) {
-    if (err.name === "NotFoundError") return res.status(httpStatus.NOT_FOUND);
-    if (err.name === "ConflictError") return res.status(httpStatus.CONFLICT);
+    if (err.name === "NotFoundError") return res.sendStatus(httpStatus.NOT_FOUND);
+    if (err.name === "ConflictError") return res.sendStatus(httpStatus.CONFLICT);
   }
 }
 
@@ -23,9 +23,9 @@ export async function deleteActivityEnrollment(req: AuthenticatedRequest, res: R
 
   try {
     await activitiesEnrollementsService.deleteActivityEnrollment(userId, Number(activityId));
-    return res.status(httpStatus.OK);
+    return res.sendStatus(httpStatus.OK);
   } catch (err) {
-    if (err.name === "NotFoundError") return res.status(httpStatus.NOT_FOUND);
-    if (err.name === "RequestError") return res.status(httpStatus.BAD_REQUEST);
+    if (err.name === "NotFoundError") return res.sendStatus(httpStatus.NOT_FOUND);
+    if (err.name === "RequestError") return res.sendStatus(httpStatus.BAD_REQUEST);
   }
 }
