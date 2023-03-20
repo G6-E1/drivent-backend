@@ -152,6 +152,7 @@ model Activity {
   Local              Local                @relation(fields: [localId], references: [id])
   localId            Int
   EnrollmentActivity EnrollmentActivity[]
+  @@index([startAt])
 }
 
 model Local {
