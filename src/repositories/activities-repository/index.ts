@@ -1,16 +1,15 @@
 import { prisma } from "@/config";
 
-async function findActivitiesByDate(startDate: string, localIdStr: string) {
-  const localId = parseInt(localIdStr);
+async function findActivitiesByDate(startDate: string, localId: number) {
   return prisma.activity.findMany({
     where: {
       localId,
       AND: {
         startAt: {
           gte: new Date(startDate),
-          lt: new Date(new Date(startDate).getTime() + 24 * 60 * 60 * 1000)
-        }
-      }
+          lt: new Date(new Date(startDate).getTime() + 24 * 60 * 60 * 1000),
+        },
+      },
     },
     select: {
       id: true,
@@ -23,8 +22,8 @@ async function findActivitiesByDate(startDate: string, localIdStr: string) {
         select: {
           id: true,
           userId: true,
-        }
-      }
+        },
+      },
     },
   });
 }

@@ -2,10 +2,10 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 import dayjs from "dayjs";
 import { TicketType, Hotel, Room, Booking, Local, EnrollmentActivity, Activity } from "@prisma/client";
-type ShortRoom = Omit<Room, "id" | "createdAt" | "updatedAt">;
-type ShortBooking = Omit<Booking, "id" | "createdAt" | "updatedAt">;
-type ShortLocal = Omit<Local, "id" | "createdAt" | "updatedAt">;
-type ShortActivity = Omit<Activity, "id" | "createdAt" | "updatedAt">;
+export type ShortRoom = Omit<Room, "id" | "createdAt" | "updatedAt">;
+export type ShortBooking = Omit<Booking, "id" | "createdAt" | "updatedAt">;
+export type ShortLocal = Omit<Local, "id" | "createdAt" | "updatedAt">;
+export type ShortActivity = Omit<Activity, "id" | "createdAt" | "updatedAt">;
 
 async function main() {
   await prisma.event.deleteMany({});
@@ -167,7 +167,7 @@ function createBooking(userId: number, rooms: Room[]): ShortBooking[] {
   return booking;
 }
 
-function createLocals(): ShortLocal[] {
+export function createLocals(): ShortLocal[] {
   const locals: ShortLocal[] = [];
   locals.push(
     { name: "Auditório Principal", maxCapacity: 200 },
@@ -178,7 +178,7 @@ function createLocals(): ShortLocal[] {
   return locals;
 }
 
-function createActivities(locals: Local[]): ShortActivity[] {
+export function createActivities(locals: Local[]): ShortActivity[] {
   const activities: ShortActivity[] = [];
 
   activities.push(
