@@ -4,9 +4,6 @@ import { Router } from "express";
 
 const activitiesRouter = Router();
 
-activitiesRouter
-  .all("/*", authenticateToken)
-  .get("/dates", getDatesActivities)
-  .get("/:localId/:date", getActivities)
+activitiesRouter.all("/*", authenticateToken).get("/dates", getDatesActivities).get("/:localId/:date", getActivities);
 
 export { activitiesRouter };
