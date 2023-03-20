@@ -9,6 +9,17 @@ function findActivityEnrollmentById(userId: number, activityId: number) {
   });
 }
 
+function findUserEnrollments(userId: number) {
+  return prisma.enrollmentActivity.findMany({
+    where: {
+      userId,
+    },
+    select: {
+      Activity: true,
+    },
+  });
+}
+
 function createActivityEnrollment(userId: number, activityId: number) {
   return prisma.enrollmentActivity.create({
     data: {
@@ -28,6 +39,7 @@ function deleteActivityEnrollment(id: number) {
 
 const activitiesEnrollmentsRepository = {
   findActivityEnrollmentById,
+  findUserEnrollments,
   createActivityEnrollment,
   deleteActivityEnrollment,
 };
