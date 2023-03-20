@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import { cleanDb } from "../helpers";
 import activitiesService from "@/services/activities-service";
 import activitiesEnrollementsService from "@/services/activities-enrollment-service";
-
+// ...
 beforeAll(async () => {
   await init();
   await cleanDb();
