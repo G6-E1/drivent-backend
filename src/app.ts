@@ -44,7 +44,7 @@ app
 
 export function init(): Promise<Express> {
   connectDb();
-  connectRedis();
+  // connectRedis();
   return Promise.resolve(app);
 }
 
