@@ -4,14 +4,6 @@ import dayjs from "dayjs";
 import { cleanDb, generateValidToken } from "../helpers";
 import activitiesService from "@/services/activities-service";
 import activitiesEnrollementsService from "@/services/activities-enrollment-service";
-import { createUser } from "../factories";
-import {
-  createLocals,
-  createActivities,
-  ShortRoom,
-  ShortLocal,
-  ShortActivity,
-} from "/home/hugo/drivent-backend/prisma/seed";
 
 beforeAll(async () => {
   await init();
@@ -22,7 +14,7 @@ describe("Activities unit tests", () => {
   beforeEach(async () => {
     await cleanDb();
   });
-  it("Should return with the activities ", async () => {
+  it("Should respond with the activities with enrollmentActivity data ", async () => {
     await prisma.user.create({
       data: {
         email: "user@gmail.com",
@@ -31,7 +23,7 @@ describe("Activities unit tests", () => {
     });
     const user = await prisma.user.findFirst({});
 
-    await prisma.local.createMany({
+    await prisma.local.create({
       data: { name: "Auditório Principal", maxCapacity: 100 },
     });
 
@@ -77,5 +69,139 @@ describe("Activities unit tests", () => {
         }),
       ]),
     );
+  });
+
+  it("Should respond with all activities dates", async () => {
+    await prisma.local.create({
+      data: { name: "Auditório Principal", maxCapacity: 100 },
+    });
+
+    const locals = await prisma.local.findFirst({});
+    await prisma.activity.createMany({
+      data: [
+        {
+          name: "Segunda atividade",
+          localId: locals.id,
+          vacancies: locals.maxCapacity,
+          startAt: dayjs().month(2).date(20).day(3).hour(9).minute(0).second(0).millisecond(0).toDate(),
+          finishAt: dayjs().month(2).date(20).day(3).hour(10).minute(0).second(0).millisecond(0).toDate(),
+        },
+        {
+          name: "Primeira atividade",
+          localId: locals.id,
+          vacancies: locals.maxCapacity,
+          startAt: dayjs().month(2).date(20).day(3).hour(11).minute(0).second(0).millisecond(0).toDate(),
+          finishAt: dayjs().month(2).date(20).day(3).hour(12).minute(0).second(0).millisecond(0).toDate(),
+        },
+      ],
+    });
+
+    const activitiesDates = await activitiesService.getDatesActivities();
+    expect(activitiesDates).toEqual(
+      expect.arrayContaining([
+        {
+          startAt: dayjs().month(2).date(20).day(3).hour(9).minute(0).second(0).millisecond(0).toDate(),
+        },
+        {
+          startAt: dayjs().month(2).date(20).day(3).hour(11).minute(0).second(0).millisecond(0).toDate(),
+        },
+      ]),
+    );
+  });
+});
+
+describe("Enrollment Activities unit tests", () => {
+  beforeEach(async () => {
+    await cleanDb();
+  });
+
+  it("Should insert a new enrollment activities in database", async () => {
+    await prisma.user.create({
+      data: {
+        email: "user@gmail.com",
+        password: "1234567",
+      },
+    });
+    const user = await prisma.user.findFirst({});
+
+    await prisma.local.create({
+      data: { name: "Auditório Principal", maxCapacity: 100 },
+    });
+
+    const locals = await prisma.local.findFirst({});
+    await prisma.activity.createMany({
+      data: [
+        {
+          name: "Segunda atividade",
+          localId: locals.id,
+          vacancies: locals.maxCapacity,
+          startAt: dayjs().month(2).date(20).day(3).hour(9).minute(0).second(0).millisecond(0).toDate(),
+          finishAt: dayjs().month(2).date(20).day(3).hour(10).minute(0).second(0).millisecond(0).toDate(),
+        },
+        {
+          name: "Primeira atividade",
+          localId: locals.id,
+          vacancies: locals.maxCapacity,
+          startAt: dayjs().month(2).date(20).day(3).hour(11).minute(0).second(0).millisecond(0).toDate(),
+          finishAt: dayjs().month(2).date(20).day(3).hour(12).minute(0).second(0).millisecond(0).toDate(),
+        },
+      ],
+    });
+    const activities = await prisma.activity.findFirst({});
+    await activitiesEnrollementsService.postActivityEnrollment(user.id, activities.id);
+
+    const enrollmentActivity = await prisma.enrollmentActivity.findFirst({});
+    delete enrollmentActivity.createdAt;
+    delete enrollmentActivity.updatedAt;
+    expect(enrollmentActivity).toEqual({
+      id: enrollmentActivity.id,
+      activityId: activities.id,
+      userId: user.id,
+    });
+  });
+
+  it("Should delete a enrollment activities in database", async () => {
+    await prisma.user.create({
+      data: {
+        email: "user@gmail.com",
+        password: "1234567",
+      },
+    });
+    const user = await prisma.user.findFirst({});
+
+    await prisma.local.create({
+      data: { name: "Auditório Principal", maxCapacity: 100 },
+    });
+
+    const locals = await prisma.local.findFirst({});
+    await prisma.activity.createMany({
+      data: [
+        {
+          name: "Segunda atividade",
+          localId: locals.id,
+          vacancies: locals.maxCapacity,
+          startAt: dayjs().month(2).date(20).day(3).hour(9).minute(0).second(0).millisecond(0).toDate(),
+          finishAt: dayjs().month(2).date(20).day(3).hour(10).minute(0).second(0).millisecond(0).toDate(),
+        },
+        {
+          name: "Primeira atividade",
+          localId: locals.id,
+          vacancies: locals.maxCapacity,
+          startAt: dayjs().month(2).date(20).day(3).hour(11).minute(0).second(0).millisecond(0).toDate(),
+          finishAt: dayjs().month(2).date(20).day(3).hour(12).minute(0).second(0).millisecond(0).toDate(),
+        },
+      ],
+    });
+    const activities = await prisma.activity.findFirst({});
+    await prisma.enrollmentActivity.create({
+      data: {
+        userId: user.id,
+        activityId: activities.id,
+      },
+    });
+
+    await activitiesEnrollementsService.deleteActivityEnrollment(user.id, activities.id);
+    const result = await prisma.enrollmentActivity.findFirst({});
+    expect(result).toEqual(null);
   });
 });

@@ -9,10 +9,6 @@ async function getActivities(date: string, localId: number) {
 async function getDatesActivities() {
   const datesActivities = await activitiesRepository.findDatesActivities();
 
-  if (!datesActivities) {
-    throw notFoundError();
-  }
-
   return datesActivities;
 }
 
