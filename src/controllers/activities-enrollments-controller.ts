@@ -13,7 +13,7 @@ export async function postActivityEnrollment(req: AuthenticatedRequest, res: Res
     return res.status(httpStatus.OK).send(enrollment);
   } catch (err) {
     if (err.name === "NotFoundError") return res.sendStatus(httpStatus.NOT_FOUND);
-    if (err.name === "ConflictError") return res.sendStatus(httpStatus.CONFLICT);
+    if (err.name === "ConflictError") return res.status(httpStatus.CONFLICT).send(err.message);
   }
 }
 

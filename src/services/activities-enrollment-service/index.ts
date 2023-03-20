@@ -1,4 +1,4 @@
-import { conflictError, notFoundError, requestError } from "@/errors";
+import { conflictError, notFoundError, requestError, unauthorizedError } from "@/errors";
 import activitiesEnrollmentsRepository from "@/repositories/activities-enrollments-repository";
 import activitiesRepository from "@/repositories/activities-repository";
 
@@ -19,7 +19,20 @@ async function postActivityEnrollment(userId: number, activityId: number) {
     throw conflictError("The user is already enrolled in this activity");
   }
 
-  await validateActivityId(activityId);
+  const activity = await validateActivityId(activityId);
+
+  const userEnrollments = await activitiesEnrollmentsRepository.findUserEnrollments(userId);
+
+  userEnrollments.map((enrollment) => {
+    if (
+      (activity.startAt >= enrollment.Activity.startAt && activity.finishAt <= enrollment.Activity.finishAt) ||
+      (activity.startAt <= enrollment.Activity.startAt && activity.finishAt >= enrollment.Activity.finishAt) ||
+      (activity.finishAt > enrollment.Activity.startAt && activity.finishAt <= enrollment.Activity.finishAt) ||
+      (activity.startAt >= enrollment.Activity.startAt && activity.startAt < enrollment.Activity.finishAt)
+    ) {
+      throw conflictError("Conflicting times");
+    }
+  });
 
   const enrollment = await activitiesEnrollmentsRepository.createActivityEnrollment(userId, activityId);
 
