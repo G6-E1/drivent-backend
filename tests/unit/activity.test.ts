@@ -1,7 +1,7 @@
 import { init } from "@/app";
 import { prisma } from "@/config";
 import dayjs from "dayjs";
-import { cleanDb, generateValidToken } from "../helpers";
+import { cleanDb } from "../helpers";
 import activitiesService from "@/services/activities-service";
 import activitiesEnrollementsService from "@/services/activities-enrollment-service";
 
