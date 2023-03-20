@@ -18,8 +18,14 @@ async function findActivitiesByDate(startDate: string, localIdStr: string) {
       vacancies: true,
       startAt: true,
       finishAt: true,
-      localId: true
-    }
+      localId: true,
+      EnrollmentActivity: {
+        select: {
+          id: true,
+          userId: true,
+        }
+      }
+    },
   });
 }
 
